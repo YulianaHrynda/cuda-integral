@@ -4,7 +4,7 @@
 
 #include "functions.h"
 
-double func_1(const double x, const double y) {
+__device__ double func_1(const double x, const double y) {
     double sums = 0.0;
     for (int i = -2; i <= 2; i++) {
         for (int j = -2; j <= 2; j++) {
@@ -14,7 +14,7 @@ double func_1(const double x, const double y) {
     return 1.0 / (0.002 + sums);
 }
 
-double func_2(const double x, const double y) {
+__device__ double func_2(const double x, const double y) {
     const double a = 20.0;
     const double b = 0.2;
     const double c = 2 * M_PI;
@@ -24,7 +24,7 @@ double func_2(const double x, const double y) {
            + a + std::exp(1.0);
 }
 
-double func_3(const double x, const double y) {
+__device__ double func_3(const double x, const double y) {
     double result = 0.0;
     const size_t m = 5;
     const std::vector<double> a1 = {1, 2, 1, 1, 5};
@@ -38,7 +38,7 @@ double func_3(const double x, const double y) {
     return -result;
 }
 
-double additional_function(const double x, const double y) {
+__device__ double additional_function(const double x, const double y) {
     size_t m = 5;
     double result1 = 0;
     double result2 = 0;

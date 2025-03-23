@@ -29,13 +29,13 @@ add_executable(${EXECUTABLE}
     main.cpp
     options_parser/options_parser.cpp
     src/parse_string.cpp
-    src/functions.cpp
+		src/functions.cu
     src/riemann_sum_cuda.cu
 
     # Хедери (не обов'язкові, але OK для IDE підтримки)
     options_parser/options_parser.h
     include/parse_string.h
-    include/functions.h
+		include/functions.h
     include/timeMeasurement.h
     include/riemann_sum_cuda.h
 )
