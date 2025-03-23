@@ -1,86 +1,86 @@
-cmake_minimum_required(VERSION 3.15)
-
-#! Check every comment after the "#!"
-
-#! CHANGE YOUR PROJECT NAME
-#  It is used as your project's main executable name. 
-set(PROJECT_NAME cuda-integral)
-project(${PROJECT_NAME} C CXX) # project(${PROJECT_NAME} C CXX ASM)
+cmake_minimum_required(VERSION 3.18)  # 3.18+ для повної підтримки CUDA
+project(cuda_integral LANGUAGES C CXX CUDA)
 
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CUDA_STANDARD 14)
 
 set(EXECUTABLE cuda_integrate)
 
-##########################################################
-# User configurable options of the template
-##########################################################
-# Note: symbols like WARNINGS_AS_ERRORS in configuration are intentionally variables
-# and not CMake options --using options creates too many problems for students.
+# -----------------------------
+# ✳️ Опції проєкту (залишено з шаблону)
+# -----------------------------
 
-#! It is a good practice to set "WARNINGS_AS_ERRORS" ON,
-#  but sometimes it creates too much trouble, so default is OFF.
 set(WARNINGS_AS_ERRORS OFF)
-
-#! Always use PVS Studio while developing.
 set(ENABLE_PVS_STUDIO OFF)
-
-#! Select appropriate sanitizers.
-#  Definitely enable sanitizers while developing.
-#  Disable it for the production builds and before submitting for grading.
-#  Only one of the Memory (MSAN), Address (ASAN), or Thread (TSan)
-#  sanitizers is applicable at the time -- the first defined.
-
-#! UndefinedBehaviorSanitizer (UBSan).
-#  Info: https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html
 set(ENABLE_UBSan OFF)
-#! AddressSanitizer -- detects use after free or after scope exit,
-#  memory overflows and leaks.
-#  Info: https://github.com/google/sanitizers/wiki/AddressSanitizer
 set(ENABLE_ASAN OFF)
-#! ThreadSanitizer -- detects data races.
-#  Info: https://clang.llvm.org/docs/ThreadSanitizer.html
 set(ENABLE_TSan OFF)
-#! MemorySanitizer -- detects uninitialized memory reads
-#  Info: https://github.com/google/sanitizers/wiki/MemorySanitizer
 set(ENABLE_MSAN OFF)
 
-#! Be default -- build release version if not specified otherwise.
 if (NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE Release)
 endif ()
 
-# Warnings as errors should be imported here -- do not move this line
-include(cmake/CompilerWarnings.cmake)
+# -----------------------------
+# ✳️ Джерельні файли
+# -----------------------------
 
-##########################################################
-# Project files, packages, libraries and so on
-##########################################################
+add_executable(${EXECUTABLE}
+    main.cpp
+    options_parser/options_parser.cpp
+    src/parse_string.cpp
+    src/functions.cpp
+    src/riemann_sum_cuda.cu
 
-#! Project main executable source compilation
-#add_executable(${PROJECT_NAME} main.cpp
-#				options_parser/options_parser.cpp options_parser/options_parser.h)
+    # Хедери (не обов'язкові, але OK для IDE підтримки)
+    options_parser/options_parser.h
+    include/parse_string.h
+    include/functions.h
+    include/timeMeasurement.h
+    include/riemann_sum_cuda.h
+)
 
-add_executable(${EXECUTABLE} main.cpp
-		options_parser/options_parser.cpp options_parser/options_parser.h
-		src/parse_string.cpp include/parse_string.h
-		include/functions.h src/functions.cpp
-		include/timeMeasurement.h
-        include/riemann_sum_cuda.h src/riemann_sum_cuda.cu)
+# -----------------------------
+# ✳️ Директорії з хедерами
+# -----------------------------
 
-#! Put path to your project headers
-target_include_directories(${EXECUTABLE} PRIVATE options_parser)
-#! Add external packages
-# options_parser requires boost::program_options library
-find_package(Boost 1.71.0 COMPONENTS program_options system REQUIRED)
+target_include_directories(${EXECUTABLE}
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/options_parser
+)
+
+# -----------------------------
+# ✳️ Boost
+# -----------------------------
+
+find_package(Boost 1.71 REQUIRED COMPONENTS program_options system)
 find_package(Threads REQUIRED)
 
 target_include_directories(${EXECUTABLE} PRIVATE ${Boost_INCLUDE_DIR})
-target_link_libraries(${EXECUTABLE} Boost::program_options Boost::system Threads::Threads)
+target_link_libraries(${EXECUTABLE}
+    PRIVATE
+        Boost::program_options
+        Boost::system
+        Threads::Threads
+)
 
-##########################################################
-# Fixed CMakeLists.txt part
-##########################################################
+# -----------------------------
+# ✳️ CUDA specific flags (optional but helpful)
+# -----------------------------
 
-# Include CMake setup
+set_target_properties(${EXECUTABLE} PROPERTIES
+    CUDA_SEPARABLE_COMPILATION ON
+    CUDA_ARCHITECTURES 86  # або 75/61 залежно від твого GPU
+)
+
+# -----------------------------
+# ✳️ Інші модулі (якщо треба)
+# -----------------------------
+
 include(cmake/main-config.cmake)
-include_directories(include src)
+include(cmake/CompilerWarnings.cmake)
+
+# Done ✅
+
