@@ -1,14 +1,10 @@
-cmake_minimum_required(VERSION 3.18)  # 3.18+ для повної підтримки CUDA
+cmake_minimum_required(VERSION 3.18)
 project(cuda_integral LANGUAGES C CXX CUDA)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CUDA_STANDARD 14)
 
 set(EXECUTABLE cuda_integrate)
-
-# -----------------------------
-# ✳️ Опції проєкту (залишено з шаблону)
-# -----------------------------
 
 set(WARNINGS_AS_ERRORS OFF)
 set(ENABLE_PVS_STUDIO OFF)
@@ -21,9 +17,6 @@ if (NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE Release)
 endif ()
 
-# -----------------------------
-# ✳️ Джерельні файли
-# -----------------------------
 
 add_executable(${EXECUTABLE}
     main.cpp
@@ -32,7 +25,6 @@ add_executable(${EXECUTABLE}
 		src/functions.cu
     src/riemann_sum_cuda.cu
 
-    # Хедери (не обов'язкові, але OK для IDE підтримки)
     options_parser/options_parser.h
     include/parse_string.h
 		include/functions.h
@@ -40,9 +32,6 @@ add_executable(${EXECUTABLE}
     include/riemann_sum_cuda.h
 )
 
-# -----------------------------
-# ✳️ Директорії з хедерами
-# -----------------------------
 
 target_include_directories(${EXECUTABLE}
     PRIVATE
@@ -50,10 +39,6 @@ target_include_directories(${EXECUTABLE}
         ${CMAKE_CURRENT_SOURCE_DIR}/src
         ${CMAKE_CURRENT_SOURCE_DIR}/options_parser
 )
-
-# -----------------------------
-# ✳️ Boost
-# -----------------------------
 
 find_package(Boost 1.71 REQUIRED COMPONENTS program_options system)
 find_package(Threads REQUIRED)
@@ -66,21 +51,12 @@ target_link_libraries(${EXECUTABLE}
         Threads::Threads
 )
 
-# -----------------------------
-# ✳️ CUDA specific flags (optional but helpful)
-# -----------------------------
 
 set_target_properties(${EXECUTABLE} PROPERTIES
     CUDA_SEPARABLE_COMPILATION ON
-    CUDA_ARCHITECTURES 86  # або 75/61 залежно від твого GPU
+    CUDA_ARCHITECTURES 86
 )
 
-# -----------------------------
-# ✳️ Інші модулі (якщо треба)
-# -----------------------------
 
 include(cmake/main-config.cmake)
 include(cmake/CompilerWarnings.cmake)
-
-# Done ✅
-
