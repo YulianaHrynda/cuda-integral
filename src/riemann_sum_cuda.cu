@@ -1,25 +1,9 @@
-//
-// Created by yuliana on 24.02.25.
-//
-
 #include "riemann_sum_cuda.h"
-#include <cmath>
-#include <iostream>
 #include <cuda_runtime.h>
 
 #include "functions.h"
 
 #define BLOCK_SIZE 16
-// __device__ double func(double x, double y) {
-//     double sums = 0.0;
-//
-//     for (int i = -2; i <= 2; i++) {
-//         for (int j = -2; j <= 2; j++){
-//             sums += 1.0 / (5 * (i+2) + j + 3 + pow( x - 16*j , 6) + pow( y - 16*i , 6));
-//         }
-//     }
-//     return 1.0 / (0.002 + sums);
-// }
 
 __device__ double call_function(int func_id, double x, double y) {
     switch (func_id) {

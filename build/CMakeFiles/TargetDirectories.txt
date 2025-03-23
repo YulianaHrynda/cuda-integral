@@ -1,3 +1,0 @@
-/home/user/Documents/cuda-integral/build/CMakeFiles/cuda_integrate.dir
-/home/user/Documents/cuda-integral/build/CMakeFiles/edit_cache.dir
-/home/user/Documents/cuda-integral/build/CMakeFiles/rebuild_cache.dir

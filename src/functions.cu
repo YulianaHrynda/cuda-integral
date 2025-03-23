@@ -1,7 +1,3 @@
-//
-// Created by gllekk on 25.02.25.
-//
-
 #include "functions.h"
 
 __device__ double func_1(const double x, const double y) {
