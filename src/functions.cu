@@ -25,28 +25,18 @@ __device__ double func_2(const double x, const double y) {
 }
 
 __device__ double func_3(const double x, const double y) {
-    double result = 0.0;
-    const size_t m = 5;
-    const std::vector<double> a1 = {1, 2, 1, 1, 5};
-    const std::vector<double> a2 = {4, 5, 1, 2, 4};
-    const std::vector<double> c = {2, 1, 4, 7, 2};
+    const int m = 5;
+    const double a1[m] = {1, 2, 1, 1, 5};
+    const double a2[m] = {4, 5, 1, 2, 4};
+    const double c[m]  = {2, 1, 4, 7, 2};
 
-    for (size_t i = 0; i < m; i++) {
-        double val = pow(x - a1[i], 2) + pow(y - a2[i], 2);
+    double result = 0.0;
+
+    for (int i = 0; i < m; ++i) {
+        double val = (x - a1[i]) * (x - a1[i]) + (y - a2[i]) * (y - a2[i]);
         result += c[i] * exp(-val / M_PI) * cos(M_PI * val);
     }
+
     return -result;
 }
 
-__device__ double additional_function(const double x, const double y) {
-    size_t m = 5;
-    double result1 = 0;
-    double result2 = 0;
-
-    for (size_t i = 1; i <= m; i++) {
-        result1 += i * cos((i + 1) * x + 1);
-        result2 += i * cos((i + 1) * y + 1);
-    }
-
-    return -(result1 * result2);
-}

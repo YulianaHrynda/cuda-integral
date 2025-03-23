@@ -1,37 +1,26 @@
 #include <iostream>
 #include <cstdlib>
+#include <cmath>
 
 #include "options_parser.h"
 #include "parse_string.h"
 #include "riemann_sum_cuda.h"
-#include "functions.h"
 #include "timeMeasurement.h"
 
 int main(int argc, char *argv[]) {
     if (argc < 3) {
         std::cerr << "Error: Incorrect number of arguments." << std::endl
-                  << "Usage: ./integrate_cuda method_number cfg_file_path" << std::endl;
+                  << "Usage: ./cuda_integrate method_number cfg_file_path" << std::endl;
         return 1;
     }
 
     const int func_no = atoi(argv[1]);
-    const auto fileName = argv[2];
+    const std::string fileName = argv[2];
 
     std::map<std::string, double> params = readParse(fileName);
     if (params.empty()) {
+        std::cerr << "Failed to parse parameters from config file." << std::endl;
         return 5;
-    }
-
-    // обираємо функцію
-    auto func = func_1;
-    switch (func_no) {
-        case 1: func = func_1; break;
-        case 2: func = func_2; break;
-        case 3: func = func_3; break;
-        case 4: func = additional_function; break;
-        default:
-            std::cerr << "Error: Incorrect method number. Use 1–4." << std::endl;
-            return 2;
     }
 
     const double abs_err = params.at("abs_err");
@@ -51,8 +40,8 @@ int main(int argc, char *argv[]) {
     for (size_t iter = 0; iter < max_iter; iter++) {
         prev_int = integral;
 
-        // Обчислення за допомогою CUDA
-        integral = riemman_return(x1, x2, y1, y2, steps_x);
+        // Виклик обчислення на GPU
+        integral = riemman_return(x1, x2, y1, y2, steps_x, func_no);
 
         Err_abs = fabs(integral - prev_int);
         Err_rel = Err_abs / fabs(integral);
@@ -74,3 +63,4 @@ int main(int argc, char *argv[]) {
 
     return 0;
 }
+

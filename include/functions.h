@@ -8,12 +8,8 @@
 #include <cmath>
 #include <vector>
 
-double func_1(double x, double y);
-
-double func_2(double x, double y);
-
-double func_3(double x, double y);
-
-double additional_function(double x, double y);
+__device__ double func_1(double x, double y);
+__device__ double func_2(double x, double y);
+__device__ double func_3(double x, double y);
 
 #endif //FUNCTIONS_H

@@ -26,7 +26,6 @@ __device__ double call_function(int func_id, double x, double y) {
         case 1: return func_1(x, y);
         case 2: return func_2(x, y);
         case 3: return func_3(x, y);
-        case 4: return additional_function(x, y);
     default: return 0.0;
     }
 }
@@ -71,9 +70,3 @@ double riemman_return(double x1, double x2, double y1, double y2, int steps, int
     return h_result;
 }
 
-
-// int main(){
-//     int n = 1000;
-//     double result = riemman_return(-50, 50, -50, 50, n);
-//     std::cout << "Result: " << result << std::endl;
-// }
